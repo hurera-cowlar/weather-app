@@ -1,0 +1,33 @@
+[
+    {
+      "city": "New York",
+      "temperature": 20,
+      "weather": "Sunny",
+      "humidity": 60
+    },
+    {
+      "city": "Los Angeles",
+      "temperature": 25,
+      "weather": "Partly Cloudy",
+      "humidity": 55
+    },
+    {
+      "city": "London",
+      "temperature": 15,
+      "weather": "Rainy",
+      "humidity": 75
+    },
+    {
+      "city": "Paris",
+      "temperature": 18,
+      "weather": "Cloudy",
+      "humidity": 70
+    },
+    {
+      "city": "Tokyo",
+      "temperature": 22,
+      "weather": "Clear",
+      "humidity": 65
+    }
+  ]
+  
