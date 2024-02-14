@@ -5,38 +5,6 @@ import axios from 'axios'
 import { onMounted, ref } from 'vue'
 
 const authStore = useAuthStore()
-const weatherData = ref([
-  {
-    city: 'New York',
-    temperature: 20,
-    weather: 'Sunny',
-    humidity: 60
-  },
-  {
-    city: 'Los Angeles',
-    temperature: 25,
-    weather: 'Partly Cloudy',
-    humidity: 55
-  },
-  {
-    city: 'London',
-    temperature: 15,
-    weather: 'Rainy',
-    humidity: 75
-  },
-  {
-    city: 'Paris',
-    temperature: 18,
-    weather: 'Cloudy',
-    humidity: 70
-  },
-  {
-    city: 'Tokyo',
-    temperature: 22,
-    weather: 'Clear',
-    humidity: 65
-  }
-])
 
 const weatherDataFromApi = ref(null)
 
@@ -58,20 +26,23 @@ onMounted(async () => {
       <table class="w-full text-sm text-left rtl:text-right">
         <thead class="text-xs uppercase bg-gray-50 text-gray-700">
           <tr>
-            <th scope="col" class="px-6 py-3 bg-[#6b7280]">City</th>
-            <th scope="col" class="px-6 py-3 bg-[#6b7280]">Temperature</th>
-            <th scope="col" class="px-6 py-3 bg-[#6b7280]">Condition</th>
-            <th scope="col" class="px-6 py-3 bg-[#6b7280]">Humidity</th>
+            <th scope="col" class="px-6 text-center py-3 w-[%] bg-[#6b7280] font-bold">City</th>
+            <th scope="col" class="px-6 text-center py-3 w-[%] bg-[#6b7280] font-bold">Condition</th>
+            <th scope="col" class="px-6 text-center py-3 w-[%] bg-[#6b7280] font-bold">Temperature</th>
+            <th scope="col" class="px-6 text-center py-3 w-[%] bg-[#6b7280] font-bold">Humidity</th>
+            <th scope="col" class="px-6 text-center py-3 w-[%] bg-[#6b7280] font-bold">Time</th>
           </tr>
         </thead>
         <tbody v-for="(weather, index) in weatherDataFromApi" :key="index">
           <tr class="bg-white border-b">
-            <th scope="row" class="px-6 py-4 font-medium whitespace-nowrap">
+            <th scope="row" class="px-6 text-center py-4 font-medium whitespace-nowrap">
               {{ weather.city }}
             </th>
-            <td class="px-6 py-4">{{ weather.temperature }}°C</td>
-            <td class="px-6 py-4">{{ weather.weather }}</td>
-            <td class="px-6 py-4">{{ weather.humidity }}</td>
+            <!-- <td class="px-6 text-center py-4 w-[%]">{{ weather.city }}°C</td> -->
+            <td class="px-6 text-center py-4 w-[%]">{{ weather.weather_condition }}</td>
+            <td class="px-6 text-center py-4 w-[%]">{{ weather.tempval }}°C</td>
+            <td class="px-6 text-center py-4 w-[%]">{{ weather.humidval }}</td>
+            <td class="px-6 text-center py-4 w-[%]">{{ new Date(weather._time).toLocaleString() }}</td>
           </tr>
         </tbody>
       </table>

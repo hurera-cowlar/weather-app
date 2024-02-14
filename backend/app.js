@@ -1,5 +1,5 @@
 require('dotenv').config();
-const connectMongoDB = require('./utils/db');
+const connectMongoDB = require('./utils/db/mongodb');
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -9,6 +9,7 @@ const weatherRoutes = require('./routes/weather');
 const globalErrorHandler = require('./controllers/error');
 const morgan = require('morgan');
 const cors = require('cors');
+const mqttClient = require('./utils/mqtt');
 
 const app = express();
 app.use(cors())
