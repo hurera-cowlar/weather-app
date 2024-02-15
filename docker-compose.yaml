@@ -9,7 +9,7 @@ services:
     depends_on:
       - backend
     environment:
-      - BACKEND_URL = "localhost:5000/api/v1"
+      - BACKEND_URL="localhost:5000/api/v1"
     networks:
       - cowlar-weather-app
 
