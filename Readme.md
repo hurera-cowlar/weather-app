@@ -22,11 +22,8 @@ Navigate to the `mqtt` directory and run the following command to start the MQTT
 
 ```
 cd mqtt
-python sub.py
+python weather_publisher.py
 ```
-
-csharp
-Copy code
 
 The MQTT publisher should now be running and publishing the messages.
 
