@@ -29,7 +29,7 @@ const handleSubmit = async () => {
         background-size: cover;
       "
     >
-      <div class="w-full rounded-lg bg-backgroundBlack shadow sm:max-w-md md:mt-0 xl:p-0">
+      <div class="bg-black w-full rounded-lg bg-backgroundBlack shadow sm:max-w-md md:mt-0 xl:p-0">
         <div class="space-y-4 p-6 sm:p-8 md:space-y-6">
           <h1
             data-testid="login-heading"

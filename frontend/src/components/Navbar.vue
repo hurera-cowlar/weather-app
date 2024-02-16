@@ -3,7 +3,6 @@ import { useAuthStore } from '@/stores/authStore'
 import { ref } from 'vue'
 
 const authStore = useAuthStore()
-
 </script>
 
 <template>
@@ -14,12 +13,20 @@ const authStore = useAuthStore()
           >WeatherHub</span
         >
       </router-link>
-      <router-link to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <span
-          class="self-center text-lg font-semibold whitespace-nowrap text-primaryRed hover:underline"
-          >Home</span
-        >
-      </router-link>
+      <div class="flex justify-between gap-10">
+        <router-link to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
+          <span
+            class="self-center text-lg font-semibold whitespace-nowrap text-primaryRed hover:underline"
+            >Home</span
+          >
+        </router-link>
+        <router-link to="/weather-charts" class="flex items-center space-x-3 rtl:space-x-reverse">
+          <span
+            class="self-center text-lg font-semibold whitespace-nowrap text-primaryRed hover:underline"
+            >Charts</span
+          >
+        </router-link>
+      </div>
       <template v-if="authStore.isLoggedIn">
         <div class="flex items-center gap-5 md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
           <p class="font-medium text-white">Hello User</p>
