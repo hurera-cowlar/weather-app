@@ -42,7 +42,7 @@ const handleSubmit = async () => {
           >
             Sign up
           </h1>
-          <form @click="handleSubmit()" class="space-y-4 md:space-y-6">
+          <form @submit="handleSubmit()" class="space-y-4 md:space-y-6">
             <div>
               <label for="email" class="mb-2 block text-sm font-medium">Email</label>
               <input
