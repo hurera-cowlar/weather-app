@@ -37,25 +37,34 @@ exports.getAllWeatherData = catchAsync(async (req, res) => {
 
   const query = `
   from(bucket: "weather-bucket")
-    |> range(start: ${timeRangeStart.toISOString()}, stop: ${timeRangeStop.toISOString()})
-    |> group(columns: ["_measurement"])
+    |> range(start: 0, stop: now())
+    |> filter(fn: (r) => r["_measurement"] == "weather")
+    |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
+    |> group()
+    |> yield(name: "all-weather-data")
   `;
+  // const query = `
+  // from(bucket: "weather-bucket")
+  //   |> range(start: ${timeRangeStart.toISOString()}, stop: ${timeRangeStop.toISOString()})
+  //   |> group(columns: ["_measurement"])
+  // `;
 
   let result = await queryApi.collectRows(query);
-  result = mergeFunc(result);
+
+  // result = mergeFunc(result);
 
   const newres = result.map((e) => {
     return {
       _time: e._time,
       city: e.city,
       weather_condition: e.weather_condition,
-      humidval: e.humidval,
-      tempval: e.tempval,
+      humidval: e.humidity,
+      tempval: e.temperature,
     };
   });
 
   // truncate influx query
-  // influx delete --bucket weather-bucket --start '1970-02-14T16:19:09.000Z' --stop '2025-02-14T16:20:00.000Z' --predicate '_measurement="weather-bucket"'
+  // influx delete --bucket weather-bucket --start '1970-02-14T16:19:09.000Z' --stop '2025-02-14T16:20:00.000Z' --predicate '_measurement="weather"'
 
   res.status(200).json({
     message: 'success',
