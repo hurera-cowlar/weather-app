@@ -40,10 +40,11 @@ services:
 
   influxdb:
     image: influxdb:latest
+    container_name: weather-app-influxdb
     ports:
       - '8086:8086'
     volumes:
-      - ./influxdata:/var/lib/influxdb2
+      - ./influxdatafurther:/var/lib/influxdatafurther
       - ./config:/etc/influxdb
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
