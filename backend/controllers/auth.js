@@ -1,7 +1,7 @@
 const {
   apiError,
   jwtTokenApiResponse,
-} = require('../services/apiResponseService')
+} = require('../services/api-response')
 const { loginService, signupService } = require('../services/auth')
 const AppError = require('../utils/AppError')
 const catchAsync = require('../utils/catchAsync')

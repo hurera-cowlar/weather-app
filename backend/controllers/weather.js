@@ -1,4 +1,4 @@
-const { apiResponse } = require('../services/apiResponseService')
+const { apiResponse } = require('../services/api-response')
 const { getAllWeatherDataService } = require('../services/weather')
 const catchAsync = require('../utils/catchAsync')
 

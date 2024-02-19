@@ -1,5 +1,5 @@
 const UserModel = require('../models/user-model')
-const { apiResponse } = require('../services/apiResponseService')
+const { apiResponse } = require('../services/api-response')
 const {
   getAllUsersService,
   getUserService,
