@@ -1,4 +1,7 @@
-const { apiError, jwtTokenApiResponse } = require('../services/apiResponseService');
+const {
+  apiError,
+  jwtTokenApiResponse,
+} = require('../services/apiResponseService');
 const { loginService, signupService } = require('../services/auth');
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
@@ -194,7 +197,6 @@ exports.signup = catchAsync(async (req, res, next) => {
     // });
 
     return jwtTokenApiResponse(res, jwt);
-    
   }
 
   return apiError(res, 'Internal Server Error');

@@ -43,8 +43,6 @@ exports.getAllUsers = catchAsync(async (req, res) => {
   const users = await getAllUsersService();
 
   return apiResponse(res, users);
-
-
 });
 
 /**

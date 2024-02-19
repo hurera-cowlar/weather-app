@@ -12,6 +12,4 @@ const apiError = (res, message, status = 500) => {
   res.status(status).json({ status: 'fail', message });
 };
 
-
-
-module.exports = { apiResponse, apiError, jwtTokenApiResponse};
+module.exports = { apiResponse, apiError, jwtTokenApiResponse };

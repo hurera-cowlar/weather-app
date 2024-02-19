@@ -4,14 +4,10 @@ const { InfluxDB, Point } = require('@influxdata/influxdb-client');
 
 // MQTT broker information
 const brokerHost = process.env.MQTT_BROKER_HOST;
-// const brokerHost = 'e586d81940394ed89ccc8493d8b32568.s1.eu.hivemq.cloud';
 const brokerPort = process.env.MQTT_BROKER_PORT;
-// const brokerPort = 8883;
-// const clientUsername = 'hivemq.webclient.1707853998095';
 const clientUsername = process.env.MQTT_CLIENT_USERNAME;
 const clientPassword = process.env.MQTT_CLIENT_PASSWORD;
 const topic = process.env.MQTT_TOPIC.toString();
-// const topic = 'weather/#';
 
 const clientOptions = {
   host: brokerHost,
