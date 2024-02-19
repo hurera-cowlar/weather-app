@@ -12,11 +12,12 @@ const morgan = require('morgan');
 const cors = require('cors');
 const mqttClient = require('./utils/mqtt');
 const swaggerJSDoc = require('swagger-jsdoc');
+const { BACKEND_PORT} = require('./config/env-config');
 
 
 const app = express();
 app.use(cors())
-const PORT = process.env.BACKEND_PORT;
+const PORT = BACKEND_PORT;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

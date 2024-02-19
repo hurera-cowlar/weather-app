@@ -1,13 +1,22 @@
 const mqtt = require('mqtt');
 const influxClient = require('../db/influxdb');
 const { InfluxDB, Point } = require('@influxdata/influxdb-client');
+const {
+  MQTT_BROKER_HOST,
+  MQTT_BROKER_PORT,
+  MQTT_CLIENT_USERNAME,
+  MQTT_CLIENT_PASSWORD,
+  MQTT_TOPIC,
+  INFLUXDB_ORG,
+  INFLUXDB_BUCKET,
+} = require('../../config/env-config');
 
 // MQTT broker information
-const brokerHost = process.env.MQTT_BROKER_HOST;
-const brokerPort = process.env.MQTT_BROKER_PORT;
-const clientUsername = process.env.MQTT_CLIENT_USERNAME;
-const clientPassword = process.env.MQTT_CLIENT_PASSWORD;
-const topic = process.env.MQTT_TOPIC.toString();
+const brokerHost = MQTT_BROKER_HOST;
+const brokerPort = MQTT_BROKER_PORT;
+const clientUsername = MQTT_CLIENT_USERNAME;
+const clientPassword = MQTT_CLIENT_PASSWORD;
+const topic = MQTT_TOPIC.toString();
 
 const clientOptions = {
   host: brokerHost,
@@ -18,7 +27,7 @@ const clientOptions = {
   connectTimeout: 30000,
   clientId: '',
 };
-console.log("here");
+console.log('here');
 const client = mqtt.connect(clientOptions);
 
 client.on('connect', function () {
@@ -31,8 +40,8 @@ client.on('message', function (topic, message) {
   console.log(`Received message on topic ${topic}: ${message}`);
 
   const writeApi = influxClient.getWriteApi(
-    process.env.INFLUXDB_ORG,
-    process.env.INFLUXDB_BUCKET,
+    INFLUXDB_ORG,
+    INFLUXDB_BUCKET,
     'ns'
   );
 
