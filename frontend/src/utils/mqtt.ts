@@ -1,10 +1,6 @@
 import mqtt from 'mqtt';
 import config from '../config/env-config';
-
-const MQTT_BROKER_HOST = 'e586d81940394ed89ccc8493d8b32568.s1.eu.hivemq.cloud'
-const MQTT_BROKER_PORT = 8884
-const MQTT_CLIENT_USERNAME = 'hivemq.webclient.1707853998095'
-const MQTT_CLIENT_PASSWORD = 'E4*lx<0?N8tQ>dF7HBmb'
+import { Ref, ref } from 'vue';
 
 enum MqttProtols {
   mqtts = 'mqtts',
@@ -30,8 +26,51 @@ const clientOptions: IClientOptions = {
   clientId: ''
 }
 
-const connectUrl = `mqtts://${MQTT_BROKER_HOST}:${MQTT_BROKER_PORT}/mqtt`
-const client = mqtt.connect(connectUrl, clientOptions)
+const connectUrl = `mqtts://${config.MQTT_BROKER_HOST}:${config.MQTT_BROKER_PORT}/mqtt`
+let client = null
+
+const MQTT_TOPIC = config.MQTT_TOPIC
+
+export const connectToMQTTBroker = (weatherDataFromApi: Ref<any>) => {
+
+  client = mqtt.connect(connectUrl, clientOptions)
+
+  client.on('connect', () => {
+    console.log('Connected to MQTT broker');
+    client.subscribe(MQTT_TOPIC);
+  });
+
+  client.on('message', (topic: string, payload: Buffer) => {
+    console.log(`Received message on topic ${topic}: ${payload.toString()}`);
+    const newdata = JSON.parse(payload.toString());
+    const updated = {
+      _time: new Date().toISOString(),
+      city: newdata['city'],
+      weather_condition: newdata['weather'],
+      humidval: newdata['humidity'],
+      tempval: newdata['temperature']
+    };
+    weatherDataFromApi.value = [...weatherDataFromApi.value, { ...updated }]
+
+  });
+
+  client.on('error', (error) => {
+    console.error('Error occurred:', error);
+    client?.end();
+  });
+
+  client.on('close', () => {
+    console.log('Client disconnected');
+  });
+};
+
+export const disconnectFromMQTTBroker = () => {
+  if (client) {
+    client.end();
+    console.log('Disconnected from MQTT broker');
+  }
+};
+
 
 
 export default client;
