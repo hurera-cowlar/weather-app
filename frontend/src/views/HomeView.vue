@@ -1,24 +1,25 @@
-<script setup>
+<script setup lang="ts">
 import NavbarComp from '@/components/Navbar.vue'
 import { useAuthStore } from '@/stores/authStore'
 import axios from 'axios'
 import { onMounted, ref, onBeforeUnmount } from 'vue'
-import client from '../utils/mqtt'
+import client from '@/utils/mqtt'
+import config from '../config/env-config'
+import { getWeather } from '@/api/weather'
 
 const authStore = useAuthStore()
 
 const weatherDataFromApi = ref(null)
 
-const MQTT_TOPIC = 'weather/#'
+const MQTT_TOPIC = config.MQTT_TOPIC
 
 onMounted(async () => {
-  // Subscribe to topic
   client.on('connect', () => {
     console.log('Connected to MQTT broker')
     client.subscribe(MQTT_TOPIC)
   })
 
-  client.on('message', (topic, payload) => {
+  client.on('message', (topic: string, payload: any) => {
     console.log(`Received message on topic ${topic}: ${payload.toString()}`)
     const newdata = JSON.parse(payload)
     const updated = {
@@ -32,8 +33,9 @@ onMounted(async () => {
   })
 
   try {
-    const response = await axios.get('http://localhost:5000/api/v1/weather')
-    const data = await response.data.data
+    const response = await getWeather();
+    // const response = await axios.get('http://localhost:5000/api/v1/weather')
+    const data = await response.data
     weatherDataFromApi.value = data
   } catch (err) {
     console.log(err)
@@ -71,7 +73,6 @@ onBeforeUnmount(() => {
             <th scope="row" class="px-6 text-center py-4 font-medium whitespace-nowrap">
               {{ weather.city }}
             </th>
-            <!-- <td class="px-6 text-center py-4 w-[%]">{{ weather.city }}°C</td> -->
             <td class="px-6 text-center py-4 w-[%]">{{ weather.weather_condition }}</td>
             <td class="px-6 text-center py-4 w-[%]">{{ weather.tempval }}°C</td>
             <td class="px-6 text-center py-4 w-[%]">{{ weather.humidval }}</td>
@@ -85,7 +86,4 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style>
-</style>
-
-
+<style></style>

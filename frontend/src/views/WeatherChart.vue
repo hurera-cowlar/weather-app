@@ -34,8 +34,10 @@ import { Line } from 'vue-chartjs'
 import client from '../utils/mqtt'
 import axios from 'axios'
 import Navbar from '@/components/Navbar.vue'
+import { getWeather } from '@/api/weather'
+import config from '@/config/env-config'
 
-const MQTT_TOPIC = 'weather/#'
+const MQTT_TOPIC = config.MQTT_TOPIC
 const weatherDataFromApi = ref(null)
 const temperatureValues = ref(null)
 const humidityValues = ref(null)
@@ -204,8 +206,9 @@ onMounted(async () => {
   })
 
   try {
-    const response = await axios.get('http://localhost:5000/api/v1/weather')
-    const data = await response.data.data
+    // const response = await axios.get('http://localhost:5000/api/v1/weather')
+    const response = await getWeather();
+    const data = await response.data
     weatherDataFromApi.value = data
     console.log(weatherDataFromApi.value)
   } catch (err) {

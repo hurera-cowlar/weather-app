@@ -1,0 +1,37 @@
+{
+    "compilerOptions": {
+      "target": "esnext",
+      "module": "esnext",
+      "strict": true,
+      "jsx": "preserve",
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "allowSyntheticDefaultImports": true,
+      "experimentalDecorators": true,
+      "strictPropertyInitialization": false,
+      "strictNullChecks": false,
+      "noImplicitAny": false,
+      "types": ["vite/client"],
+      "paths": {
+        "@/*": ["./src/*"],
+      }
+
+    },
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.d.ts",
+      "src/**/*.tsx",
+      "tests/**/*.ts",
+      "tests/**/*.tsx",
+      "src/**/*.vue",
+      "typings/**/*.d.ts",
+      "shims-vue.d.ts"
+    ],
+    "exclude": [
+      "node_modules"
+    ],
+ 
+  }
+  

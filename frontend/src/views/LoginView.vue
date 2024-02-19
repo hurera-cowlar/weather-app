@@ -1,15 +1,20 @@
-<script setup>
+<script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore'
 import { ref, watch } from 'vue'
 
 const authStore = useAuthStore()
 
-const loginData = ref({
+interface LoginData {
+  email: string
+  password: string
+}
+
+const loginData = ref<LoginData>({
   email: 'test@gmail.com',
   password: 'test.1234'
 })
 
-const handleSubmit = async () => {
+const handleSubmit = async (): Promise<void> => {
   await authStore.login(loginData.value.email, loginData.value.password)
 }
 </script>
@@ -86,4 +91,3 @@ const handleSubmit = async () => {
     </div>
   </main>
 </template>
- 

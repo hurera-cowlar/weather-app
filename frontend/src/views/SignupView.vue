@@ -1,16 +1,24 @@
-<script setup>
+<script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore'
 import { ref } from 'vue'
 
 const authStore = useAuthStore()
 
-const signupData = ref({
+interface SignupData {
+  email: string
+  password: string
+  name: string
+  phone: string
+}
+
+const signupData = ref<SignupData>({
   email: 'test11@gmail.com',
   password: 'test.1234',
   name: 'Jane Doe',
   phone: '9876543210'
 })
-const handleSubmit = async () => {
+
+const handleSubmit = async (): Promise<void> => {
   await authStore.signup(
     signupData.value.name,
     signupData.value.email,
@@ -109,4 +117,3 @@ const handleSubmit = async () => {
     </div>
   </main>
 </template>
- 

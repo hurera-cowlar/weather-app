@@ -4,7 +4,6 @@ import SignupView from '../views/SignupView.vue'
 import WeatherChart from '../views/WeatherChart.vue'
 import HomePage from '../views/HomeView.vue'
 
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [

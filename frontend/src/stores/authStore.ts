@@ -2,52 +2,62 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import router from '@/router'
+import { loginUser, signUpUser } from '@/api/auth'
+
+interface IAuthStoreState {
+  token: string
+  isLoggedIn: boolean
+  isLoading: boolean
+  error: string | null
+}
 
 export const useAuthStore = defineStore({
   id: 'auth',
-  state: () => ({
+  state: (): IAuthStoreState => ({
     token: '',
     isLoggedIn: false,
     isLoading: false,
-    error: ref(null)
+    error: null
   }),
   persist: {
     storage: localStorage,
     paths: ['token', 'isLoggedIn']
   },
   actions: {
-    async login(email, password) {
+    async login(email: string, password: string) {
       this.isLoading = true
       try {
-        const data = await axios.post(`http://localhost:5000/api/v1/auth/login`, {
-          email,
-          password
-        })
-        this.token = data.data.token
+        // const data = await axios.post(`http://localhost:5000/api/v1/auth/login`, {
+        //   email,
+        //   password
+        // })
+        const data = await loginUser(email, password)
+        this.token = data.token
         this.isLoggedIn = true
         localStorage.setItem('token', this.token)
         router.push('/')
-      } catch (err) {
+      } catch (err: any) {
         this.error = err.response.data.message
         console.log(err)
       } finally {
         this.isLoading = false
       }
     },
-    async signup(name, email, password, phone) {
+    async signup(name: string, email: string, password: string, phone: string) {
       this.isLoading = true
       try {
-        const data = await axios.post(`http://localhost:5000/api/v1/auth/signup`, {
-          name,
-          email,
-          password,
-          phoneNumber: phone
-        })
-        this.token = data.data.token
+        const data = await signUpUser(email, password, name, phone)
+        // const data = await axios.post(`http://localhost:5000/api/v1/auth/signup`, {
+        //   email,
+        //   password,
+        //   name,
+        //   phoneNumber: phone
+        // })
+        this.token = data.token
         this.isLoggedIn = true
         localStorage.setItem('token', this.token)
         router.push('/')
-      } catch (err) {
+      } catch (err: any) {
         this.error = err.response.data.message
         console.log(err)
       } finally {
@@ -58,7 +68,7 @@ export const useAuthStore = defineStore({
       this.token = ''
       this.isLoggedIn = false
       this.isLoading = false
-      this.error = ref(null)
+      this.error = null
       router.push('/login')
     }
   }
