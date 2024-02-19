@@ -1,5 +1,6 @@
-const { INFLUXDB_ORG } = require('../config/env-config')
+const { INFLUXDB_ORG, INFLUXDB_BUCKET } = require('../config/env-config')
 const influxClient = require('../utils/db/influxdb')
+const { InfluxDB, Point } = require('@influxdata/influxdb-client')
 
 exports.getAllWeatherDataService = async (req, res) => {
   const queryApi = influxClient.getQueryApi(INFLUXDB_ORG)
@@ -26,4 +27,17 @@ exports.getAllWeatherDataService = async (req, res) => {
   })
 
   return newres
+}
+
+exports.writeWeatherDataService = (message) => {
+  const writeApi = influxClient.getWriteApi(INFLUXDB_ORG, INFLUXDB_BUCKET, 'ns')
+
+  const point = new Point('weather')
+    .tag('city', message.city)
+    .tag('weather_condition', message.weather)
+    .intField('temperature', message.temperature)
+    .intField('humidity', message.humidity)
+
+  writeApi.writePoint(point)
+  writeApi.close()
 }

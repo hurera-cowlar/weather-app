@@ -1,15 +1,12 @@
 const mqtt = require('mqtt')
-const influxClient = require('../db/influxdb')
-const { InfluxDB, Point } = require('@influxdata/influxdb-client')
 const {
   MQTT_BROKER_HOST,
   MQTT_BROKER_PORT,
   MQTT_CLIENT_USERNAME,
   MQTT_CLIENT_PASSWORD,
   MQTT_TOPIC,
-  INFLUXDB_ORG,
-  INFLUXDB_BUCKET,
 } = require('../../config/env-config')
+const { writeWeatherDataService } = require('../../services/weather')
 
 // MQTT broker information
 const brokerHost = MQTT_BROKER_HOST
@@ -27,7 +24,6 @@ const clientOptions = {
   connectTimeout: 30000,
   clientId: '',
 }
-console.log('here')
 const client = mqtt.connect(clientOptions)
 
 client.on('connect', function () {
@@ -38,19 +34,8 @@ client.on('connect', function () {
 client.on('message', function (topic, message) {
   message = message.toString()
   console.log(`Received message on topic ${topic}: ${message}`)
-
-  const writeApi = influxClient.getWriteApi(INFLUXDB_ORG, INFLUXDB_BUCKET, 'ns')
-
   message = JSON.parse(message)
-
-  const point = new Point('weather')
-    .tag('city', message.city)
-    .tag('weather_condition', message.weather)
-    .intField('temperature', message.temperature)
-    .intField('humidity', message.humidity)
-
-  writeApi.writePoint(point)
-  writeApi.close()
+  writeWeatherDataService(message) //Writing weather data to influxDB service
   console.log('Data written to InfluxDB')
 })
 
