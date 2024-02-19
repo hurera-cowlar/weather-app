@@ -30,10 +30,6 @@ export const useAuthStore = defineStore({
     async login(email: string, password: string) {
       this.isLoading = true
       try {
-        // const data = await axios.post(`http://localhost:5000/api/v1/auth/login`, {
-        //   email,
-        //   password
-        // })
         const data = await loginUser(email, password)
         this.token = data.token
         this.isLoggedIn = true
@@ -57,12 +53,6 @@ export const useAuthStore = defineStore({
       this.isLoading = true
       try {
         const data = await signUpUser(email, password, name, phone)
-        // const data = await axios.post(`http://localhost:5000/api/v1/auth/signup`, {
-        //   email,
-        //   password,
-        //   name,
-        //   phoneNumber: phone
-        // })
         this.token = data.token
         this.isLoggedIn = true
         localStorage.setItem('token', this.token)
