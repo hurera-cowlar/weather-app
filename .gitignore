@@ -6,3 +6,7 @@ influxdata/*
 node_modules
 node_modules/
 node_modules/*
+
+influxdatafurther
+influxdatafurther/
+influxdatafurther*

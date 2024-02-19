@@ -1,5 +1,6 @@
 const AppError = require('../utils/AppError');
 const ValidationError = require('mongoose').Error.ValidationError; // Import Mongoose's ValidationError
+const CastError = require('mongoose').Error.CastError; // Import Mongoose's ValidationError
 
 const sendError = (err, res) => {
   res.status(err.statusCode).json({
@@ -17,17 +18,29 @@ const handleValidationError = (err, res) => {
   });
 };
 
+const handleCastError = (err, res, next) => {
+  const message = `Invalid ${err.path}: ${err.value}`;
+  return res.status(400).json({
+    status: 'fail',
+    message: message,
+  });};
+
 const handleDuplicateKeyErr = (err) => {
   const dupKey = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
   return new AppError(
     `Duplicate field value: ${dupKey}. Use another value`,
-    400
+    409
   );
 };
 
 const globalErrorHandler = (err, req, res, next) => {
+  console.log(err);
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
+
+  if (err instanceof CastError) {
+    handleCastError(err, res, next);
+  }
 
   if (err instanceof ValidationError) {
     handleValidationError(err, res);

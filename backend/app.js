@@ -1,6 +1,7 @@
 require('dotenv').config();
 const connectMongoDB = require('./utils/db/mongodb');
-
+const swaggerUI = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
 const express = require('express');
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/user');
@@ -10,6 +11,8 @@ const globalErrorHandler = require('./controllers/error');
 const morgan = require('morgan');
 const cors = require('cors');
 const mqttClient = require('./utils/mqtt');
+const swaggerJSDoc = require('swagger-jsdoc');
+
 
 const app = express();
 app.use(cors())
@@ -30,6 +33,8 @@ app.use((req, res, next) => {
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/weather', weatherRoutes);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+
 
 app.all('*', (req, res, next) => {
   next(new Error(`Can't find ${req.originalUrl} on this server!`, 404));
