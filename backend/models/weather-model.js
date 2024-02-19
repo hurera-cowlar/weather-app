@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 // Define the schema
 const weatherSchema = new mongoose.Schema(
@@ -14,7 +14,7 @@ const weatherSchema = new mongoose.Schema(
     weather: {
       type: String,
       required: true,
-      enum: ['Sunny', 'Partly Cloudy', 'Rainy', 'Cloudy', 'Clear']
+      enum: ['Sunny', 'Partly Cloudy', 'Rainy', 'Cloudy', 'Clear'],
     },
     humidity: {
       type: Number,
@@ -22,8 +22,8 @@ const weatherSchema = new mongoose.Schema(
     },
   },
   { collection: 'weather' }
-);
+)
 
-const Weather = mongoose.model('Weather', weatherSchema, 'weather');
+const Weather = mongoose.model('Weather', weatherSchema, 'weather')
 
-module.exports = Weather;
+module.exports = Weather

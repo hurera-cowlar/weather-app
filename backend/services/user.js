@@ -1,15 +1,15 @@
-const UserModel = require('../models/user-model');
+const UserModel = require('../models/user-model')
 
 exports.getAllUsersService = async () => {
-  const users = await UserModel.find();
-  console.log(users);
-  return users;
-};
+  const users = await UserModel.find()
+  console.log(users)
+  return users
+}
 
 exports.getUserService = async (id) => {
-  const user = await UserModel.findById(id);
-  return user;
-};
+  const user = await UserModel.findById(id)
+  return user
+}
 
 exports.updateUserService = async (id, name, phoneNumber) => {
   const user = await UserModel.findByIdAndUpdate(
@@ -19,12 +19,12 @@ exports.updateUserService = async (id, name, phoneNumber) => {
       phoneNumber,
     },
     { new: true }
-  );
+  )
 
-  return user;
-};
+  return user
+}
 
 exports.deleteUserService = async (id) => {
-  const user = await UserModel.findByIdAndDelete(id);
+  const user = await UserModel.findByIdAndDelete(id)
   return user
-};
+}

@@ -1,6 +1,6 @@
-const { apiResponse } = require('../services/apiResponseService');
-const { getAllWeatherDataService } = require('../services/weather');
-const catchAsync = require('../utils/catchAsync');
+const { apiResponse } = require('../services/apiResponseService')
+const { getAllWeatherDataService } = require('../services/weather')
+const catchAsync = require('../utils/catchAsync')
 
 /**
  * @swagger
@@ -55,7 +55,7 @@ const catchAsync = require('../utils/catchAsync');
  *
  */
 exports.getAllWeatherData = catchAsync(async (req, res) => {
-  const weatherData = await getAllWeatherDataService();
+  const weatherData = await getAllWeatherDataService()
 
-  return apiResponse(res, weatherData, 200, (sendLength = true));
-});
+  return apiResponse(res, weatherData, 200, (sendLength = true))
+})

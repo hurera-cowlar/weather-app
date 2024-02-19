@@ -1,13 +1,13 @@
-const UserModel = require('../models/user-model');
-const { apiResponse } = require('../services/apiResponseService');
+const UserModel = require('../models/user-model')
+const { apiResponse } = require('../services/apiResponseService')
 const {
   getAllUsersService,
   getUserService,
   updateUserService,
   deleteUserService,
-} = require('../services/user');
-const AppError = require('../utils/AppError');
-const catchAsync = require('../utils/catchAsync');
+} = require('../services/user')
+const AppError = require('../utils/AppError')
+const catchAsync = require('../utils/catchAsync')
 
 /**
  * @swagger
@@ -40,10 +40,10 @@ const catchAsync = require('../utils/catchAsync');
  */
 
 exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await getAllUsersService();
+  const users = await getAllUsersService()
 
-  return apiResponse(res, users);
-});
+  return apiResponse(res, users)
+})
 
 /**
  * @swagger
@@ -94,12 +94,12 @@ exports.getAllUsers = catchAsync(async (req, res) => {
  */
 
 exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await getUserService(req.params.id);
+  const user = await getUserService(req.params.id)
 
-  if (!user) return next(new AppError('No such user found', 404));
+  if (!user) return next(new AppError('No such user found', 404))
 
-  return apiResponse(res, user);
-});
+  return apiResponse(res, user)
+})
 
 /**
  * @swagger
@@ -174,17 +174,17 @@ exports.getUser = catchAsync(async (req, res, next) => {
  */
 
 exports.updateUser = catchAsync(async (req, res, next) => {
-  const { name, phoneNumber } = req.body;
+  const { name, phoneNumber } = req.body
 
   if (!name && !phoneNumber)
-    return next(new AppError('Nothing sent to update', 401));
+    return next(new AppError('Nothing sent to update', 401))
 
-  const user = await updateUserService(req.params.id, name, phoneNumber);
+  const user = await updateUserService(req.params.id, name, phoneNumber)
 
-  if (!user) return next(new AppError('No such user found', 404));
+  if (!user) return next(new AppError('No such user found', 404))
 
-  return apiResponse(res, user);
-});
+  return apiResponse(res, user)
+})
 
 /**
  * @swagger
@@ -238,8 +238,8 @@ exports.updateUser = catchAsync(async (req, res, next) => {
  */
 
 exports.deleteUser = catchAsync(async (req, res, next) => {
-  const user = await deleteUserService(req.params.id);
-  if (!user) return next(new AppError('No such user founf', 404));
+  const user = await deleteUserService(req.params.id)
+  if (!user) return next(new AppError('No such user founf', 404))
 
-  return apiResponse(res, null, 204);
-});
+  return apiResponse(res, null, 204)
+})

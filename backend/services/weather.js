@@ -1,8 +1,8 @@
-const { INFLUXDB_ORG } = require('../config/env-config');
-const influxClient = require('../utils/db/influxdb');
+const { INFLUXDB_ORG } = require('../config/env-config')
+const influxClient = require('../utils/db/influxdb')
 
 exports.getAllWeatherDataService = async (req, res) => {
-  const queryApi = influxClient.getQueryApi(INFLUXDB_ORG);
+  const queryApi = influxClient.getQueryApi(INFLUXDB_ORG)
 
   const query = `
     from(bucket: "weather-bucket")
@@ -11,9 +11,9 @@ exports.getAllWeatherDataService = async (req, res) => {
       |> pivot(rowKey: ["_time"], columnKey: ["_field"], valueColumn: "_value")
       |> group()
       |> yield(name: "all-weather-data")
-    `;
+    `
 
-  let result = await queryApi.collectRows(query);
+  let result = await queryApi.collectRows(query)
 
   const newres = result.map((e) => {
     return {
@@ -22,8 +22,8 @@ exports.getAllWeatherDataService = async (req, res) => {
       weather_condition: e.weather_condition,
       humidval: e.humidity,
       tempval: e.temperature,
-    };
-  });
+    }
+  })
 
-  return newres;
-};
+  return newres
+}
