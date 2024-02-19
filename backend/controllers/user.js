@@ -1,4 +1,5 @@
 const UserModel = require('../models/user-model');
+const { apiResponse } = require('../services/apiResponseService');
 const {
   getAllUsersService,
   getUserService,
@@ -40,12 +41,10 @@ const catchAsync = require('../utils/catchAsync');
 
 exports.getAllUsers = catchAsync(async (req, res) => {
   const users = await getAllUsersService();
-  console.log(users);
 
-  res.status(200).json({
-    message: 'success',
-    data: users,
-  });
+  return apiResponse(res, users);
+
+
 });
 
 /**
@@ -100,10 +99,8 @@ exports.getUser = catchAsync(async (req, res, next) => {
   const user = await getUserService(req.params.id);
 
   if (!user) return next(new AppError('No such user found', 404));
-  res.status(200).json({
-    message: 'success',
-    data: user,
-  });
+
+  return apiResponse(res, user);
 });
 
 /**
@@ -188,10 +185,7 @@ exports.updateUser = catchAsync(async (req, res, next) => {
 
   if (!user) return next(new AppError('No such user found', 404));
 
-  res.status(200).json({
-    message: 'success',
-    data: user,
-  });
+  return apiResponse(res, user);
 });
 
 /**
@@ -249,7 +243,5 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
   const user = await deleteUserService(req.params.id);
   if (!user) return next(new AppError('No such user founf', 404));
 
-  res.status(204).json({
-    message: 'success',
-  });
+  return apiResponse(res, null, 204);
 });

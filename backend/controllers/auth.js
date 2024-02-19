@@ -1,3 +1,4 @@
+const { apiError, jwtTokenApiResponse } = require('../services/apiResponseService');
 const { loginService, signupService } = require('../services/auth');
 const AppError = require('../utils/AppError');
 const catchAsync = require('../utils/catchAsync');
@@ -91,16 +92,10 @@ exports.login = catchAsync(async (req, res, next) => {
 
     const jwt = generateJWT(user._id);
 
-    return res.status(200).json({
-      message: 'success',
-      token: jwt,
-    });
+    return jwtTokenApiResponse(res, jwt);
   }
 
-  res.status(401).json({
-    status: 'fail',
-    message: 'Wrong credentials',
-  });
+  return apiError(res, 'Wrong credentials', 401);
 });
 
 /**
@@ -183,7 +178,6 @@ exports.login = catchAsync(async (req, res, next) => {
  *               $ref: '#/components/schemas/InternalServerError'
  */
 
-
 exports.signup = catchAsync(async (req, res, next) => {
   const { password, email, phoneNumber, name } = req.body;
 
@@ -194,14 +188,14 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   if (user) {
     const jwt = generateJWT(user._id);
-    return res.status(200).json({
-      message: 'success',
-      token: jwt,
-    });
+    // return res.status(200).json({
+    //   message: 'success',
+    //   token: jwt,
+    // });
+
+    return jwtTokenApiResponse(res, jwt);
+    
   }
 
-  res.status(500).json({
-    status: 'fail',
-    message: 'there was an error',
-  });
+  return apiError(res, 'Internal Server Error');
 });
