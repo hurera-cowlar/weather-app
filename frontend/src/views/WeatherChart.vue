@@ -1,6 +1,6 @@
 <template>
   <Navbar />
-  <div v-if="weatherDataFromApi == null" class="h-[80vh] flex justify-center items-center">
+  <div v-if="weatherDataFromApi === null" class="h-[80vh] flex justify-center items-center">
     <h1>No data found. Please start the publisher :(</h1>
   </div>
   <div
@@ -11,32 +11,36 @@
   </div>
   <div v-else class="flex flex-col justify-center items-center pt-24">
     <div class="sm:w-[70%] md:w-[30%] flex flex-col justify-center items-center px-11">
-      <h1 class="sm:text-lg md:text-4xl font-bold mb-14">Weather Condition</h1>
-      <Doughnut v-if="weatherDataFromApi" :data="weatherCondValues" :options="weatherCondOptions" />
+      <h1 class="sm:text-lg md:text-4xl font-bold mb-14 text-center">Weather Condition</h1>
+      <DoughnutChart
+        v-if="weatherDataFromApi"
+        :data="weatherCondValues"
+        :options="weatherCondOptions"
+        :key=0
+      />
     </div>
     <div class="w-[85%] sm:w-[60%] flex flex-col justify-center items-center px-11 pt-20">
       <h1 class="sm:text-lg md:text-4xl font-bold mb-14">Temperature</h1>
-      <Line v-if="weatherDataFromApi" :data="temperatureValues" :options="tempOptions" />
+      <LineChart
+        v-if="weatherDataFromApi"
+        :data="temperatureValues"
+        :options="tempOptions"
+        :key=1
+      />
     </div>
     <div class="sm:w-[85%] md:w-[60%] flex flex-col justify-center items-center px-11 py-20">
       <h1 class="sm:text-lg md:text-4xl font-bold mb-14">Humidity</h1>
-      <Line v-if="weatherDataFromApi" :data="humidityValues" :options="humidityOptions" />
+      <LineChart
+        v-if="weatherDataFromApi"
+        :data="humidityValues"
+        :options="humidityOptions"
+        :key=2
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement
-} from 'chart.js'
 import { Doughnut } from 'vue-chartjs'
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { Line } from 'vue-chartjs'
@@ -46,9 +50,14 @@ import { useAuthStore } from '@/stores/authStore'
 import Navbar from '@/components/Navbar.vue'
 import { getWeather } from '@/api/weather'
 import config from '@/config/env-config'
+import { tempOptions, humidityOptions, weatherCondOptions } from '@/config/chart-options'
+import LineChart from '@/components/LineChart.vue'
+import DoughnutChart from '@/components/DoughnutChart.vue'
 
 import { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
+
+import { connectToMQTTBroker, disconnectFromMQTTBroker } from '@/utils/mqtt'
 
 const MQTT_TOPIC = config.MQTT_TOPIC
 const weatherDataFromApi = ref(null)
@@ -59,13 +68,12 @@ const weatherCondValues = ref(null)
 const authStore = useAuthStore()
 
 watch(weatherDataFromApi, (newValue, oldValue) => {
+  console.log('here')
   const newValue_ = [...newValue]
-
   const timeArray = []
   const temperatureArray = []
   const humidityArrray = []
   const weatherCondArray = []
-
   const weatherCount = {}
 
   newValue.forEach((item) => {
@@ -129,78 +137,6 @@ watch(weatherDataFromApi, (newValue, oldValue) => {
   }
 })
 
-const tempOptions = {
-  responsive: true,
-
-  scales: {
-    y: {
-      display: true,
-      title: {
-        display: true,
-        text: 'Temperature (C)'
-      },
-      grid: {
-        color: '#1d1d1d',
-        backgroundColor: 'white'
-      },
-      min: -60,
-      max: 60,
-      ticks: {
-        stepSize: 10,
-        maxTicksLimit: 12
-      }
-    },
-    x: {
-      display: true,
-      title: {
-        display: true,
-        text: 'Date & Time'
-      },
-
-      grid: {
-        color: '#1d1d1d'
-      }
-    }
-  }
-}
-const humidityOptions = {
-  responsive: true,
-  scales: {
-    y: {
-      display: true,
-      title: {
-        display: true,
-        text: 'Humidity ( g.m-3)'
-      },
-      grid: {
-        color: '#1d1d1d',
-        backgroundColor: 'white'
-      },
-      min: 0,
-      max: 100,
-      ticks: {
-        stepSize: 10,
-        maxTicksLimit: 10
-      }
-    },
-    x: {
-      display: true,
-      title: {
-        display: true,
-        text: 'Date & Time'
-      },
-
-      grid: {
-        color: '#1d1d1d'
-      }
-    }
-  }
-}
-
-const weatherCondOptions = {
-  responsive: true
-}
-
 onMounted(async () => {
   if (
     authStore.isLoggedIn
@@ -217,50 +153,25 @@ onMounted(async () => {
           dangerouslyHTMLString: true
         })
   )
-    client.on('connect', () => {
-      console.log('Connected to MQTT broker')
-      client.subscribe(MQTT_TOPIC)
-    })
-
-  client.on('message', (topic, payload) => {
-    console.log(`Received message on topic ${topic}: ${payload.toString()}`)
-    const newdata = JSON.parse(payload)
-    const updated = {
-      _time: new Date().toISOString(),
-      city: newdata['city'],
-      weather_condition: newdata['weather'],
-      humidval: newdata['humidity'],
-      tempval: newdata['temperature']
-    }
-    weatherDataFromApi.value = [...weatherDataFromApi.value, { ...updated }]
-  })
+    connectToMQTTBroker(weatherDataFromApi)
 
   try {
-    // const response = await axios.get('http://localhost:5000/api/v1/weather')
     const response = await getWeather()
     const data = await response.data
     weatherDataFromApi.value = data
     console.log(weatherDataFromApi.value)
   } catch (err) {
     console.log(err)
+    toast(`Oops! There has been a server error! Try again later`, {
+      theme: 'dark',
+      type: 'error',
+      position: 'top-center',
+      dangerouslyHTMLString: true
+    })
   }
 })
 
 onBeforeUnmount(() => {
-  if (client) {
-    client.end()
-    console.log('Disconnected from MQTT broker')
-  }
+  disconnectFromMQTTBroker()
 })
-
-ChartJS.register(
-  ArcElement,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-)
 </script>

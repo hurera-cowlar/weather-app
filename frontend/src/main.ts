@@ -17,6 +17,8 @@ app.use(pinia)
 
 app.use(router)
 
+import "./plugins/chart"
+
 app.use(
     Vue3Toasity,
     {
