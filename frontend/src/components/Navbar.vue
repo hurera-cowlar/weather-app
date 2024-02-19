@@ -5,7 +5,7 @@ const authStore = useAuthStore()
 </script>
 
 <template>
-  <nav class="bg-black sticky w-full z-20 top-0 start-0 border-b-2 border-primaryRed">
+  <nav class="bg-[#121212] sticky w-full z-20 top-0 start-0 border-b-2 border-primaryRed">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
       <router-link to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
         <span class="self-center text-2xl font-semibold whitespace-nowrap text-primaryRed"

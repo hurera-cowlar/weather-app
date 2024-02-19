@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/authStore'
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
 
 const authStore = useAuthStore()
 
@@ -26,6 +29,17 @@ const handleSubmit = async (): Promise<void> => {
     signupData.value.phone
   )
 }
+
+
+onMounted(async () => {
+  toast('Sign in! LESGO', {
+    theme: 'dark',
+    type: 'info',
+    position: 'top-center',
+    dangerouslyHTMLString: true
+  })
+}) 
+
 </script>
 <template>
   <main>

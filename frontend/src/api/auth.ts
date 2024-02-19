@@ -1,4 +1,6 @@
 import axios from "@/config/axios";
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
 
 export const loginUser = async (email: string, password: string) => {
     try {
@@ -11,8 +13,15 @@ export const loginUser = async (email: string, password: string) => {
                 token: res.data.token,
             };
         }
-    } catch (error: any) {
-        console.log('Login error', error);
+    } catch (err: any) {
+        console.log('Login error', err);
+        const error = err.response.data.message
+        toast(`Oops! ${error}`, {
+            theme: 'dark',
+            type: 'error',
+            position: 'top-center',
+            dangerouslyHTMLString: true
+        })
     }
     return null;
 };
@@ -30,8 +39,15 @@ export const signUpUser = async (email: string, password: string, name: string, 
                 token: res.data.token,
             };
         }
-    } catch (error: any) {
-        console.log('SignUp error', error);
+    } catch (err: any) {
+        console.log('SignUp error', err);
+        const error = err.response.data.message
+        toast(`Oops! ${error}`, {
+            theme: 'dark',
+            type: 'error',
+            position: 'top-center',
+            dangerouslyHTMLString: true
+        })
     }
     return null;
 };

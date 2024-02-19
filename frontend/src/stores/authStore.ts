@@ -4,6 +4,9 @@ import axios from 'axios'
 import router from '@/router'
 import { loginUser, signUpUser } from '@/api/auth'
 
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
+
 interface IAuthStoreState {
   token: string
   isLoggedIn: boolean
@@ -35,10 +38,17 @@ export const useAuthStore = defineStore({
         this.token = data.token
         this.isLoggedIn = true
         localStorage.setItem('token', this.token)
+        toast('Successfully Logged In!', {
+          theme: 'dark',
+          type: 'success',
+          position: 'top-center',
+          dangerouslyHTMLString: true
+        })
         router.push('/')
       } catch (err: any) {
         this.error = err.response.data.message
         console.log(err)
+       
       } finally {
         this.isLoading = false
       }
@@ -69,7 +79,15 @@ export const useAuthStore = defineStore({
       this.isLoggedIn = false
       this.isLoading = false
       this.error = null
+      toast("Bye, you're logged out", {
+        theme: 'dark',
+        type: 'success',
+        position: 'top-center',
+        dangerouslyHTMLString: true,
+        "autoClose": 10000,
+      })
       router.push('/login')
+
     }
   }
 })

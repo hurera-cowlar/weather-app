@@ -1,6 +1,15 @@
 <template>
   <Navbar />
-  <div class="flex flex-col justify-center items-center pt-24">
+  <div v-if="weatherDataFromApi == null" class="h-[80vh] flex justify-center items-center">
+    <h1>No data found. Please start the publisher :(</h1>
+  </div>
+  <div
+    v-else-if="weatherDataFromApi?.length === 0"
+    class="h-[80vh] flex justify-center items-center"
+  >
+    <h1>No data found. Please start the publisher :(</h1>
+  </div>
+  <div v-else class="flex flex-col justify-center items-center pt-24">
     <div class="sm:w-[70%] md:w-[30%] flex flex-col justify-center items-center px-11">
       <h1 class="sm:text-lg md:text-4xl font-bold mb-14">Weather Condition</h1>
       <Doughnut v-if="weatherDataFromApi" :data="weatherCondValues" :options="weatherCondOptions" />
@@ -33,15 +42,21 @@ import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { Line } from 'vue-chartjs'
 import client from '../utils/mqtt'
 import axios from 'axios'
+import { useAuthStore } from '@/stores/authStore'
 import Navbar from '@/components/Navbar.vue'
 import { getWeather } from '@/api/weather'
 import config from '@/config/env-config'
+
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
 
 const MQTT_TOPIC = config.MQTT_TOPIC
 const weatherDataFromApi = ref(null)
 const temperatureValues = ref(null)
 const humidityValues = ref(null)
 const weatherCondValues = ref(null)
+
+const authStore = useAuthStore()
 
 watch(weatherDataFromApi, (newValue, oldValue) => {
   const newValue_ = [...newValue]
@@ -66,7 +81,7 @@ watch(weatherDataFromApi, (newValue, oldValue) => {
     },
     { keys: [], values: [] }
   )
-  
+
   weatherCondValues.value = {
     labels: [...keys],
     datasets: [
@@ -187,10 +202,25 @@ const weatherCondOptions = {
 }
 
 onMounted(async () => {
-  client.on('connect', () => {
-    console.log('Connected to MQTT broker')
-    client.subscribe(MQTT_TOPIC)
-  })
+  if (
+    authStore.isLoggedIn
+      ? toast('Welcome!', {
+          theme: 'dark',
+          type: 'success',
+          position: 'top-center',
+          dangerouslyHTMLString: true
+        })
+      : toast('You need to login first!', {
+          theme: 'dark',
+          type: 'info',
+          position: 'top-center',
+          dangerouslyHTMLString: true
+        })
+  )
+    client.on('connect', () => {
+      console.log('Connected to MQTT broker')
+      client.subscribe(MQTT_TOPIC)
+    })
 
   client.on('message', (topic, payload) => {
     console.log(`Received message on topic ${topic}: ${payload.toString()}`)
@@ -207,7 +237,7 @@ onMounted(async () => {
 
   try {
     // const response = await axios.get('http://localhost:5000/api/v1/weather')
-    const response = await getWeather();
+    const response = await getWeather()
     const data = await response.data
     weatherDataFromApi.value = data
     console.log(weatherDataFromApi.value)

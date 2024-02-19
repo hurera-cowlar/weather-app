@@ -7,6 +7,9 @@ import client from '@/utils/mqtt'
 import config from '../config/env-config'
 import { getWeather } from '@/api/weather'
 
+import { toast } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
+
 const authStore = useAuthStore()
 
 const weatherDataFromApi = ref(null)
@@ -14,10 +17,25 @@ const weatherDataFromApi = ref(null)
 const MQTT_TOPIC = config.MQTT_TOPIC
 
 onMounted(async () => {
-  client.on('connect', () => {
-    console.log('Connected to MQTT broker')
-    client.subscribe(MQTT_TOPIC)
-  })
+  if (
+    authStore.isLoggedIn
+      ? toast('Welcome!', {
+          theme: 'dark',
+          type: 'success',
+          position: 'top-center',
+          dangerouslyHTMLString: true
+        })
+      : toast('You need to login first!', {
+          theme: 'dark',
+          type: 'info',
+          position: 'top-center',
+          dangerouslyHTMLString: true
+        })
+  )
+    client.on('connect', () => {
+      console.log('Connected to MQTT broker')
+      client.subscribe(MQTT_TOPIC)
+    })
 
   client.on('message', (topic: string, payload: any) => {
     console.log(`Received message on topic ${topic}: ${payload.toString()}`)
@@ -33,12 +51,18 @@ onMounted(async () => {
   })
 
   try {
-    const response = await getWeather();
+    const response = await getWeather()
     // const response = await axios.get('http://localhost:5000/api/v1/weather')
     const data = await response.data
     weatherDataFromApi.value = data
   } catch (err) {
     console.log(err)
+    toast(`Oops! There has been a server error! Try again later`, {
+      theme: 'dark',
+      type: 'error',
+      position: 'top-center',
+      dangerouslyHTMLString: true
+    })
   }
 })
 
@@ -54,7 +78,16 @@ onBeforeUnmount(() => {
   <NavbarComp />
   <div class="px-16 mt-5">
     <div class="relative overflow-x-auto">
-      <table class="w-full text-sm text-left rtl:text-right">
+      <div v-if="weatherDataFromApi == null" class="h-[80vh] flex justify-center items-center">
+        <h1>No data found. Please start the publisher :(</h1>
+      </div>
+      <div
+        v-else-if="weatherDataFromApi?.length === 0"
+        class="h-[80vh] flex justify-center items-center"
+      >
+        <h1>No data found. Please start the publisher :(</h1>
+      </div>
+      <table v-else class="w-full text-sm text-left rtl:text-right">
         <thead class="text-xs uppercase bg-gray-50 text-gray-700">
           <tr>
             <th scope="col" class="px-6 text-center py-3 w-[%] bg-[#6b7280] font-bold">City</th>
