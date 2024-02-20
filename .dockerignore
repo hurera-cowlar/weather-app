@@ -7,3 +7,15 @@ coverage
 .git
 
 .gitignore
+
+influxdata
+influxdatafurther
+
+influxdata/*
+influxdatafurther/*
+
+influxdata/
+influxdatafurther/
+
+frontend/*.env
+backend/*.env
